@@ -3,6 +3,7 @@ import { Component, Input, EventEmitter } from '@angular/core';
 import { TaskComponent } from "./task/task.component";
 import { NewTaskComponent } from './new-task/new-task.component';
 import { type NewTaskData } from './task/task.model';
+import { TaskService } from './tasks.service';
 
 @Component({
   selector: 'app-tasks',
@@ -12,19 +13,29 @@ import { type NewTaskData } from './task/task.model';
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent {
-  tasks = dummyTasks;
+  // tasks = dummyTasks;
   isAddingTask = false;
   @Input({ required: true })
   userName!: string;
   @Input({ required: true })
   userId!: string;
+  // private taskService: TaskService;
+  // constructor(taskService: TaskService) {
+  //   this.taskService = taskService;
+  // }
+
+
+  // shortcut provided by typescript
+  constructor(private taskService:TaskService){
+
+  }
 
   get selectedUsersTasks() {
-    return this.tasks.filter((task) => task.userId == this.userId)
+   return this.taskService.getUserTasks(this.userId);
   }
 
   onCompleteTask(id: string) {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
+
   }
 
   onAddNewTask() {
@@ -37,13 +48,7 @@ export class TasksComponent {
 
   onAddTask(taskData: NewTaskData) {
     // console.log(taskData);
-    this.tasks.unshift({
-      userId: this.userId,
-      id: new Date().getTime().toString(),
-      title: taskData.title,
-      summary: taskData.summary,
-      dueDate: taskData.dueDate
-    })
+
     this.isAddingTask = false;
   }
 
